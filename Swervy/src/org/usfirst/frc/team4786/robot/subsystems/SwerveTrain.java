@@ -135,6 +135,26 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     		    // speeds from -1 to 1 (hopefully)
     		    // angles from -180 to 180 (hopefully)
     		    
+    		    double highestSpeed; // if one of the wheels is supposed to go faster than one, we have to scale them all down
+    		    
+    		    if (Math.abs(backLeftSpeed) > Math.abs(backRightSpeed)) { // checking for fastest 
+    		    	highestSpeed = Math.abs(backLeftSpeed);               // and setting highestSpeed to the highest speed
+    		    } else {                                        // have to use Math.abs because scale is -1 to 1
+    		    	highestSpeed = Math.abs(backRightSpeed);
+    		    } if (Math.abs(frontRightSpeed) > highestSpeed) {
+    		    	highestSpeed = Math.abs(frontRightSpeed);
+    		    } if (Math.abs(frontLeftSpeed) > highestSpeed) {
+    		    	highestSpeed = Math.abs(frontLeftSpeed);
+    		    }                                     // highestSpeed is now the highest speed
+    		    
+    		    if (highestSpeed > 1) {                           // if it's > 1, divide all speeds by highest speed
+    		    	backRightSpeed = backRightSpeed/highestSpeed; // highestSpeed is positive (Math.abs()) so it doesn't affect direction of motors
+    		    	backLeftSpeed = backLeftSpeed/highestSpeed;
+    		    	frontRightSpeed = frontRightSpeed/highestSpeed;
+    		    	frontLeftSpeed = frontLeftSpeed/highestSpeed;
+    		    }                                                 // if 1 or lower, its fine
+    		    
+    		    
     		    WheelAngleSpeeds[0] = backRightAngle;
     		    WheelAngleSpeeds[1] = backRightSpeed;
     		    WheelAngleSpeeds[2] = backLeftAngle;
