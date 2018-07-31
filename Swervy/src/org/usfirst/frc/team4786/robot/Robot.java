@@ -1,17 +1,17 @@
 
 package org.usfirst.frc.team4786.robot;
 
+
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
-import org.usfirst.frc.team4786.robot.commands.SwerveDrive;
-import org.usfirst.frc.team4786.robot.commands.WheelDrive;
+import org.usfirst.frc.team4786.robot.commands.*;
+import org.usfirst.frc.team4786.robot.subsystems.*;
+import org.usfirst.frc.team4786.robot.RobotMap;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -21,26 +21,26 @@ import org.usfirst.frc.team4786.robot.commands.WheelDrive;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	private WheelDrive backRight = new WheelDrive (31, 30, 31);
-	private WheelDrive backLeft = new WheelDrive (41, 40, 41);
-	private WheelDrive frontRight = new WheelDrive (11, 10, 11);
-	private WheelDrive frontLeft = new WheelDrive (21, 20, 21);
-
-	private SwerveDrive swerveDrive = new SwerveDrive (backRight, backLeft, frontRight, frontLeft);
 	
-	private Joystick joystick = new Joystick (0);
+	public static OI oi; // gives the robot an OI called oi
+	
+	public static ModuleDriver backRight = new ModuleDriver (RobotMap.backRightAngleMotorID, RobotMap.backRightDriveMotorID); // gives the robot our 4 swerve modules 
+	public static ModuleDriver backLeft = new ModuleDriver (RobotMap.backLeftAngleMotorID, RobotMap.backLeftDriveMotorID); // ModuleDriver (int angleMotorSpeedControllerID, int driveMotorSpeedControllerID)
+	public static ModuleDriver frontRight = new ModuleDriver (RobotMap.frontRightAngleMotorID, RobotMap.frontRightDriveMotorID);
+	public static ModuleDriver frontLeft = new ModuleDriver (RobotMap.frontLeftAngleMotorID, RobotMap.frontLeftDriveMotorID);
 
-	public static OI oi;
+	public static SwerveTrain swerveTrain = new SwerveTrain (backRight, backLeft, frontRight, frontLeft); // makes a SwerveTrain out of our 4 modules
+	
 
-	Command autonomousCommand;
-	SendableChooser<Command> chooser = new SendableChooser<>();
+	Command autonomousCommand; // autonomous stuff
+	SendableChooser<Command> chooser = new SendableChooser<>(); // autonomous stuff
 
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
 	@Override
-	public void robotInit() {
+	public void robotInit() { // run when the robot turns on
 		oi = new OI();
 		// chooser.addObject("My Auto", new MyAutoCommand());
 		SmartDashboard.putData("Auto mode", chooser);
@@ -52,12 +52,12 @@ public class Robot extends IterativeRobot {
 	 * the robot is disabled.
 	 */
 	@Override
-	public void disabledInit() {
+	public void disabledInit() { // run when the robot is first disabled... unreliable
 
 	}
 
 	@Override
-	public void disabledPeriodic() {
+	public void disabledPeriodic() { // happens while robot is disables... unreliable
 		Scheduler.getInstance().run();
 	}
 
@@ -73,8 +73,8 @@ public class Robot extends IterativeRobot {
 	 * to the switch structure below with additional strings & commands.
 	 */
 	@Override
-	public void autonomousInit() {
-		autonomousCommand = chooser.getSelected();
+	public void autonomousInit() { // run once at the start of autonomous
+		autonomousCommand = chooser.getSelected(); // gets the selected auto command 
 
 		/*
 		 * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -84,36 +84,36 @@ public class Robot extends IterativeRobot {
 		 */
 
 		// schedule the autonomous command (example)
-		if (autonomousCommand != null)
-			autonomousCommand.start();
+		if (autonomousCommand != null) // If the auto command seems good...
+			autonomousCommand.start(); // run it!
 	}
 
 	/**
 	 * This function is called periodically during autonomous
 	 */
 	@Override
-	public void autonomousPeriodic() {
-		Scheduler.getInstance().run();
+	public void autonomousPeriodic() { // called multiple times per second during autonomous
+		Scheduler.getInstance().run(); // runs whatever commands are scheduled
 	}
 
 	@Override
-	public void teleopInit() {
+	public void teleopInit() { // runs at the start of teleop
 		// This makes sure that the autonomous stops running when
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
 		if (autonomousCommand != null)
-			autonomousCommand.cancel();
+			autonomousCommand.cancel(); // ends the autonomous
 	}
 
 	/**
 	 * This function is called periodically during operator control
 	 */
 	@Override
-	public void teleopPeriodic() {
-//		Scheduler.getInstance().run();
+	public void teleopPeriodic() { // runs repeatedly during teleop
+		Scheduler.getInstance().run();
 		
-		swerveDrive.drive (joystick.getRawAxis (0), joystick.getRawAxis (1), joystick.getRawAxis (2));
+		//swerveDrive.drive (joystick.getRawAxis (0), joystick.getRawAxis (1), joystick.getRawAxis (2));
 
 	}
 
