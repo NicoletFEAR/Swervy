@@ -3,6 +3,9 @@ package org.usfirst.frc.team4786.robot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+
+import org.usfirst.frc.team4786.robot.commands.OrientationSwitch;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -18,6 +21,7 @@ public class OI {
 	// number it is.
 	// Joystick stick = new Joystick(port);
 	public Joystick driveStick;
+	public Button buttonJoy1;
 	// Button button = new JoystickButton(stick, buttonNumber);
 
 	// There are a few additional built in buttons you can use. Additionally,
@@ -26,6 +30,8 @@ public class OI {
 	public OI() {
 		
 		driveStick = new Joystick(0);
+		buttonJoy1 = new JoystickButton(driveStick, 1);
+		buttonJoy1.whenPressed(new OrientationSwitch());
 		
 	}
 	//// TRIGGERING COMMANDS WITH BUTTONS
@@ -35,7 +41,6 @@ public class OI {
 	// Start the command when the button is pressed and let it run the command
 	// until it is finished as determined by it's isFinished method.
 	// button.whenPressed(new ExampleCommand());
-
 	// Run the command while the button is being held down and interrupt it once
 	// the button is released.
 	// button.whileHeld(new ExampleCommand());

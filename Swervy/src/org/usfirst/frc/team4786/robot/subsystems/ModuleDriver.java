@@ -17,6 +17,8 @@ public class ModuleDriver extends Subsystem {
 	
 	public static SensorCollection angleEncoder;
 	
+	public static ModuleAnglePID ModuleAnglePIDController;
+	
 	public ModuleDriver (int angleMotorSpeedControllerID, int driveMotorSpeedControllerID) { // makes a module with its angleMotorSpeedControllerID and driveMotorSpeedControllerID
 		
 		this.angleMotorSpeedController = new WPI_TalonSRX (angleMotorSpeedControllerID); // gives each new module that is created an angleMotorSpeedController
@@ -24,6 +26,11 @@ public class ModuleDriver extends Subsystem {
 		
 		this.angleEncoder = this.angleMotorSpeedController.getSensorCollection();
 		
+		this.ModuleAnglePIDController = new ModuleAnglePID (this); // makes an angle PID controller for this ModuleDriver
+
+    	this.angleEncoder.setQuadraturePosition(0, 5); // sets the encoder position to 0 when the ModuleDriver is first created
+    	// the second value is timeoutMS... not sure
+    	
 	}
 	
     // Put methods for controlling this subsystem
@@ -34,6 +41,10 @@ public class ModuleDriver extends Subsystem {
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
         //setDefaultCommand(new MySpecialCommand());
+    }
+    
+    public void spinToAngle (double targetAngle) { // spins to a target angle
+    	ModuleAnglePIDController.setAngleSetpoint(targetAngle); // tells the PID what it needs to get to (in degrees)
     }
     
     public void setRotationSpeed (double targetRotationSpeed) { // receives target angle gets the module to that angle

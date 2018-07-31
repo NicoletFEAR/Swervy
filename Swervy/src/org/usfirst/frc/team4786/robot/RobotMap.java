@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj.PIDController;
 public class RobotMap {
 	
 	public static double wheelWidthDistance = 20; // distance between wheels left to right
-	public static double wheelLengthDistance = 20; // distance between wheels front to back
+	public static double wheelLengthDistance = 18.5; // distance between wheels front to back
+	
+	public static double encoderCodesPerRev = 1024; // how many ticks are in an encoder circle (may be wrong)
 	
 	// Joystick dead zones
 	public static double driveJoystickXDeadZone = 0.05;
