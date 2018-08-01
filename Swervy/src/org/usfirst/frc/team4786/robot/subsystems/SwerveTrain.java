@@ -3,6 +3,8 @@ package org.usfirst.frc.team4786.robot.subsystems;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 import org.usfirst.frc.team4786.robot.commands.*;
 import org.usfirst.frc.team4786.robot.OI;
@@ -40,6 +42,7 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     	navX.reset(); // resets navX 
     	
     	this.isFieldOriented = (false);
+    	SmartDashboard.putBoolean("isFieldOriented", isFieldOriented);
     	
     	this.backRightModule = backRight;
     	this.backLeftModule = backLeft;
@@ -51,6 +54,7 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     
     public void switchControlModeOrientation () {
     	isFieldOriented = !isFieldOriented;
+    	SmartDashboard.putBoolean("isFieldOriented", isFieldOriented);
     }
     
     public double[] convertJoystickToIntentAxes () { // takes
@@ -92,6 +96,8 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     	if (isFieldOriented) { // change the x and y so that forward is field oriented
     		
     		double navxAngle = navX.getAngle(); // get the value of the navX
+    		
+    		SmartDashboard.putNumber("navXAngle", navxAngle);
     		
     		double h = Math.sqrt ((Ox1 * Ox1) + (Oy1 * Oy1)); 
     		double thetaAngle = (Math.atan(Oy1 / Ox1) + navxAngle); // these two lines essentially add the x and y inputs into dir and mag and then rotates it based on navX angle
@@ -153,6 +159,15 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     		    	frontLeftSpeed = frontLeftSpeed/highestSpeed;
     		    }                                                 // if 1 or lower, its fine
     		    
+    		    SmartDashboard.putNumber("backRightAngle", backRightAngle); // print out the angles and speeds
+    		    SmartDashboard.putNumber("backRightSpeed", backRightSpeed);
+    		    SmartDashboard.putNumber("backLeftAngle", backLeftAngle);
+    		    SmartDashboard.putNumber("backLeftSpeed", backLeftSpeed);
+    		    SmartDashboard.putNumber("frontRightAngle", frontRightAngle);
+    		    SmartDashboard.putNumber("frontRightSpeed", frontRightSpeed);
+    		    SmartDashboard.putNumber("frontLeftAngle", frontLeftAngle);
+    		    SmartDashboard.putNumber("frontLeftSpeed", frontLeftSpeed);
+    		    
     		    
     		    WheelAngleSpeeds[0] = backRightAngle;
     		    WheelAngleSpeeds[1] = backRightSpeed;
@@ -164,10 +179,7 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     		    WheelAngleSpeeds[7] = frontLeftSpeed;
     		    
     		    // end Mitchell's math
-
-    		//}
     		
-    	
     	
     	//test
     	return WheelAngleSpeeds; // outputs array: (generally called in OpenLoopSwerveJoystick)
@@ -179,11 +191,11 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     	
     	backRightModule.spinToAngle(WheelAngleSpeedsArray[0]);
     	backRightModule.setDriveSpeed(WheelAngleSpeedsArray[1]);
-//    	backLeftModule.spinToAngle(WheelAngleSpeedsArray[2]);
+    	backLeftModule.spinToAngle(WheelAngleSpeedsArray[2]);
     	backLeftModule.setDriveSpeed(WheelAngleSpeedsArray[3]);
-//    	frontRightModule.spinToAngle(WheelAngleSpeedsArray[4]);
+    	frontRightModule.spinToAngle(WheelAngleSpeedsArray[4]);
     	frontRightModule.setDriveSpeed(WheelAngleSpeedsArray[5]);
-//    	frontLeftModule.spinToAngle(WheelAngleSpeedsArray[6]);
+    	frontLeftModule.spinToAngle(WheelAngleSpeedsArray[6]);
     	frontLeftModule.setDriveSpeed(WheelAngleSpeedsArray[7]);
     	
     }

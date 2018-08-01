@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import org.usfirst.frc.team4786.robot.commands.*;
 import org.usfirst.frc.team4786.robot.subsystems.*;
 import org.usfirst.frc.team4786.robot.RobotMap;
+import org.usfirst.frc.team4786.robot.OI;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -113,6 +114,11 @@ public class Robot extends IterativeRobot {
 	public void teleopPeriodic() { // runs repeatedly during teleop
 		Scheduler.getInstance().run();
 		
+		SmartDashboard.putNumber("backRightEncoderValue", swerveTrain.backRightModule.angleEncoder.getQuadraturePosition()); // print out encoder values
+		SmartDashboard.putNumber("backLeftEncoderValue", swerveTrain.backLeftModule.angleEncoder.getQuadraturePosition());
+		SmartDashboard.putNumber("frontRightEncoderValue", swerveTrain.frontRightModule.angleEncoder.getQuadraturePosition());
+		SmartDashboard.putNumber("forntLeftEncoderValue", swerveTrain.frontLeftModule.angleEncoder.getQuadraturePosition());
+
 		//swerveDrive.drive (joystick.getRawAxis (0), joystick.getRawAxis (1), joystick.getRawAxis (2));
 
 	}
