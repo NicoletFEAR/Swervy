@@ -12,12 +12,10 @@ import edu.wpi.first.wpilibj.PIDController;
  */
 public class ModuleDriver extends Subsystem {
 
-	public static WPI_TalonSRX angleMotorSpeedController;
-	public static WPI_TalonSRX driveMotorSpeedController;
-	
-	public static SensorCollection angleEncoder;
-	
-	public static ModuleAnglePID ModuleAnglePIDController;
+	public WPI_TalonSRX angleMotorSpeedController;
+	public WPI_TalonSRX driveMotorSpeedController;
+	public SensorCollection angleEncoder;
+	public ModuleAnglePID ModuleAnglePIDController;
 	
 	public ModuleDriver (int angleMotorSpeedControllerID, int driveMotorSpeedControllerID) { // makes a module with its angleMotorSpeedControllerID and driveMotorSpeedControllerID
 		

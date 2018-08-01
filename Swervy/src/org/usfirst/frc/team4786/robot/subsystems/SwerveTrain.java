@@ -57,22 +57,21 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     	
     	double intentAxes[] = new double[3]; // makes an array of doubles to hold the 3 joystick axes, x, y, and r
     	
-    	if (Math.abs(Robot.oi.driveStick.getRawAxis(1)) <= RobotMap.driveJoystickXDeadZone) { // dead zone on the joystick so it does not move accidentaly
+    	if (Math.abs(Robot.oi.driveStick.getRawAxis(0)) <= RobotMap.driveJoystickXDeadZone) { // dead zone on the joystick so it does not move accidentaly
     		intentAxes[0] = 0;
     	} else {
-    		intentAxes[0] = Robot.oi.driveStick.getRawAxis(1); // places axes 1 into index 0 of array
+    		intentAxes[0] = Robot.oi.driveStick.getRawAxis(0); // places axes 1 into index 0 of array
     	}
-    	if (Math.abs(Robot.oi.driveStick.getRawAxis(2)) <= RobotMap.driveJoystickXDeadZone) { // dead zone on the joystick so it does not move accidentaly
+    	if (Math.abs(Robot.oi.driveStick.getRawAxis(1)) <= RobotMap.driveJoystickXDeadZone) { // dead zone on the joystick so it does not move accidentaly
     		intentAxes[1] = 0;
     	} else {
-    		intentAxes[1] = Robot.oi.driveStick.getRawAxis(2); // places axes 2 into index 1 of array
+    		intentAxes[1] = Robot.oi.driveStick.getRawAxis(1); // places axes 2 into index 1 of array
     	}
-    	if (Math.abs(Robot.oi.driveStick.getRawAxis(3)) <= RobotMap.driveJoystickXDeadZone) { // dead zone on the joystick so it does not move accidentaly
+    	if (Math.abs(Robot.oi.driveStick.getRawAxis(2)) <= RobotMap.driveJoystickXDeadZone) { // dead zone on the joystick so it does not move accidentaly
     		intentAxes[2] = 0;
     	} else {
-    		intentAxes[2] = Robot.oi.driveStick.getRawAxis(3); // places axes 3 into index 2 of array
+    		intentAxes[2] = Robot.oi.driveStick.getRawAxis(2); // places axes 3 into index 2 of array
     	}
-    	
     	
     	return intentAxes; // the three joystick axes
     }
@@ -180,11 +179,11 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     	
     	backRightModule.spinToAngle(WheelAngleSpeedsArray[0]);
     	backRightModule.setDriveSpeed(WheelAngleSpeedsArray[1]);
-    	backLeftModule.spinToAngle(WheelAngleSpeedsArray[2]);
+//    	backLeftModule.spinToAngle(WheelAngleSpeedsArray[2]);
     	backLeftModule.setDriveSpeed(WheelAngleSpeedsArray[3]);
-    	frontRightModule.spinToAngle(WheelAngleSpeedsArray[4]);
+//    	frontRightModule.spinToAngle(WheelAngleSpeedsArray[4]);
     	frontRightModule.setDriveSpeed(WheelAngleSpeedsArray[5]);
-    	frontLeftModule.spinToAngle(WheelAngleSpeedsArray[6]);
+//    	frontLeftModule.spinToAngle(WheelAngleSpeedsArray[6]);
     	frontLeftModule.setDriveSpeed(WheelAngleSpeedsArray[7]);
     	
     }

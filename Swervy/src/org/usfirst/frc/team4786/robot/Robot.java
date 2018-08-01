@@ -43,7 +43,7 @@ public class Robot extends IterativeRobot {
 	public void robotInit() { // run when the robot turns on
 		oi = new OI();
 		// chooser.addObject("My Auto", new MyAutoCommand());
-		SmartDashboard.putData("Auto mode", chooser);
+//		SmartDashboard.putData("Auto mode", chooser);
 	}
 
 	/**
