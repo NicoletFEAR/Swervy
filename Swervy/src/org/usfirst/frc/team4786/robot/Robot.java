@@ -21,10 +21,10 @@ import org.usfirst.frc.team4786.robot.commands.WheelDrive;
  * directory.
  */
 public class Robot extends IterativeRobot {
-	private WheelDrive backRight = new WheelDrive (31, 30, 31);
-	private WheelDrive backLeft = new WheelDrive (41, 40, 41);
-	private WheelDrive frontRight = new WheelDrive (11, 10, 11);
-	private WheelDrive frontLeft = new WheelDrive (21, 20, 21);
+	private WheelDrive backRight = new WheelDrive (31, 30);
+	private WheelDrive backLeft = new WheelDrive (41, 40);
+	private WheelDrive frontLeft = new WheelDrive (21, 20);
+	private WheelDrive frontRight = new WheelDrive (11, 10);
 
 	private SwerveDrive swerveDrive = new SwerveDrive (backRight, backLeft, frontRight, frontLeft);
 	
