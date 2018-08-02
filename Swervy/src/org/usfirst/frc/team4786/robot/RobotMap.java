@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.PIDController;
 
 public class RobotMap {
 	
+	public static double wheelAnglePValue = 1;
+	
 	public static double wheelWidthDistance = 20; // distance between wheels left to right
 	public static double wheelLengthDistance = 18.5; // distance between wheels front to back
 	
