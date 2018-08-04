@@ -131,10 +131,10 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     		    double frontRightSpeed = Math.sqrt ((b * b) + (d * d));
     		    double frontLeftSpeed = Math.sqrt ((b * b) + (c * c));
 
-    		    double backRightAngle = Math.atan2 (a, d) / Math.PI;
-    		    double backLeftAngle = Math.atan2 (a, c) / Math.PI;
-    		    double frontRightAngle = Math.atan2 (b, d) / Math.PI;
-    		    double frontLeftAngle = Math.atan2 (b, c) / Math.PI;
+    		    double backRightAngle = 180 * (Math.atan2 (a, d) / Math.PI);
+    		    double backLeftAngle = 180 * (Math.atan2 (a, c) / Math.PI);
+    		    double frontRightAngle = 180 * (Math.atan2 (b, d) / Math.PI);
+    		    double frontLeftAngle = 180 * (Math.atan2 (b, c) / Math.PI);
     		    
     		    // outputs desired speeds and angles of modules
     		    // speeds from -1 to 1 (hopefully)

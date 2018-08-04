@@ -13,16 +13,17 @@ import edu.wpi.first.wpilibj.PIDController;
 
 public class RobotMap {
 	
-	public static double wheelAnglePValue = 1;
+	public static double wheelAnglePValue = 0.001;
+	public static double wheelAngleIValue = 0.1;
 	
 	public static double wheelWidthDistance = 20; // distance between wheels left to right
 	public static double wheelLengthDistance = 18.5; // distance between wheels front to back
 	
-	public static double encoderCodesPerRev = 1024; // how many ticks are in an encoder circle (may be wrong)
+	public static double encoderCodesPerRev = 1600; // how many ticks are in an encoder circle (may be wrong)
 	
 	// Joystick dead zones
-	public static double driveJoystickXDeadZone = 0.05;
-	public static double driveJoystickYDeadZone = 0.05;
+	public static double driveJoystickXDeadZone = 0.175;
+	public static double driveJoystickYDeadZone = 0.175;
 	public static double driveJoystickzDeadZone = 0.075;
 	
 	// Our drive motor Talon ID's:

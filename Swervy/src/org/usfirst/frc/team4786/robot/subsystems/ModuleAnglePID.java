@@ -12,14 +12,15 @@ import edu.wpi.first.wpilibj.command.PIDSubsystem;
  */
 public class ModuleAnglePID extends PIDSubsystem { // PID that runs in the background and will make our modules set their angles
 	
-	public static SensorCollection angleEncoder;
-	public static WPI_TalonSRX angleTalon;
+	// PID
+	
+	public SensorCollection angleEncoder;
+	public WPI_TalonSRX angleTalon;
     // Initialize your subsystem here
     public ModuleAnglePID(ModuleDriver thisSwerveModule) {
     	
-    	super("ModuleAnglePID", RobotMap.wheelAnglePValue, 0.0, 0.0);
+    	super("ModuleAnglePID", RobotMap.wheelAnglePValue, RobotMap.wheelAngleIValue, 0.0);
     	setAbsoluteTolerance(0.05);
-    	getPIDController().setContinuous(true);
     	
         // Use these to get going:
         // setSetpoint() -  Sets where the PID controller should move the system
@@ -29,9 +30,10 @@ public class ModuleAnglePID extends PIDSubsystem { // PID that runs in the backg
     	angleTalon = thisSwerveModule.angleMotorSpeedController;
     	
     	setInputRange(-(RobotMap.encoderCodesPerRev / 2), (RobotMap.encoderCodesPerRev / 2)); // input range (- halfway to + halfway of encoder ticks)
-    	setOutputRange(-1, 1); // output range. we want speeds of motor (-1-, 1)
+    	setOutputRange(-0.2, 0.2); // output range. we want speeds of motor (-1-, 1)
 
     	
+    	getPIDController().setContinuous();
     	enable();
     }
 
