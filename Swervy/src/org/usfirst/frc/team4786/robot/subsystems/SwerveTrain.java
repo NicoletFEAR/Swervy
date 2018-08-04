@@ -91,7 +91,7 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     	
     	double x1;
     	double y1;
-    	double x2 = rAxisIntent;
+    	double r1 = rAxisIntent;
     		
     	if (isFieldOriented) { // change the x and y so that forward is field oriented
     		
@@ -119,27 +119,26 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     		//mitchell's math:
     		
     		    double r = Math.sqrt ((L * L) + (W * W));
-    		    y1 *= -1;
+    		    
 
-    		    double a = x1 - x2 * (L / r);
-    		    double b = x1 + x2 * (L / r);
-    		    double c = y1 - x2 * (W / r);
-    		    double d = y1 + x2 * (W / r);
+    		    double a = x1 - r1 * (L / r);
+    		    double b = x1 + r1 * (L / r);
+    		    double c = y1 - r1 * (W / r);
+    		    double e = y1 + r1 * (W / r);
 
-    		    double backRightSpeed = Math.sqrt ((a * a) + (d * d));
-    		    double backLeftSpeed = Math.sqrt ((a * a) + (c * c));
-    		    double frontRightSpeed = Math.sqrt ((b * b) + (d * d));
-    		    double frontLeftSpeed = Math.sqrt ((b * b) + (c * c));
+    		    double backLeftSpeed = Math.sqrt ((b * b) + (c * c));
+    		    double frontLeftSpeed = Math.sqrt ((b * b) + (e * e));
+    		    double frontRightSpeed = Math.sqrt ((a * a) + (e * e));
+    		    double backRightSpeed = Math.sqrt ((a * a) + (c * c));
 
-    		    double backRightAngle = 180 * (Math.atan2 (a, d) / Math.PI);
-    		    double backLeftAngle = 180 * (Math.atan2 (a, c) / Math.PI);
-    		    double frontRightAngle = 180 * (Math.atan2 (b, d) / Math.PI);
-    		    double frontLeftAngle = 180 * (Math.atan2 (b, c) / Math.PI);
+    		    double backLeftAngle = 180 * (Math.atan2 (b, c) / Math.PI);
+    		    double frontLeftAngle = 180 * (Math.atan2 (b, e) / Math.PI);
+    		    double frontRightAngle = 180 * (Math.atan2 (a, e) / Math.PI);
+    		    double backRightAngle = 180 * (Math.atan2 (a, c) / Math.PI);
     		    
     		    // outputs desired speeds and angles of modules
-    		    // speeds from -1 to 1 (hopefully)
-    		    // angles from -180 to 180 (hopefully)
-    		    
+    		    // speeds from -1 to 1 
+    		    // angles from -180 to 180 oriented based on positive X axis!!!!
     		    double highestSpeed; // if one of the wheels is supposed to go faster than one, we have to scale them all down
     		    
     		    if (Math.abs(backLeftSpeed) > Math.abs(backRightSpeed)) { // checking for fastest 
@@ -178,7 +177,7 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     		    WheelAngleSpeeds[6] = frontLeftAngle;
     		    WheelAngleSpeeds[7] = frontLeftSpeed;
     		    
-    		    // end Mitchell's math
+    		    // end Grimes-Mitchell's math
     		
     	
     	//test
