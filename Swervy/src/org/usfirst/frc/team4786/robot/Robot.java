@@ -105,6 +105,13 @@ public class Robot extends IterativeRobot {
 		// this line or comment it out.
 		if (autonomousCommand != null)
 			autonomousCommand.cancel(); // ends the autonomous
+		
+		swerveTrain.backLeftModule.angleEncoder.setQuadraturePosition(0, 10); // reset the encoders
+		swerveTrain.backRightModule.angleEncoder.setQuadraturePosition(0, 10); // reset the encoders
+		swerveTrain.frontLeftModule.angleEncoder.setQuadraturePosition(0, 10); // reset the encoders
+		swerveTrain.frontRightModule.angleEncoder.setQuadraturePosition(0, 10); // reset the encoders
+		
+		
 	}
 
 	/**

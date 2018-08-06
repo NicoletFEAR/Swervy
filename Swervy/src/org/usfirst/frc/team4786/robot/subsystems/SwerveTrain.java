@@ -66,12 +66,12 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     	} else {
     		intentAxes[0] = Robot.oi.driveStick.getRawAxis(0); // places axes 1 into index 0 of array
     	}
-    	if (Math.abs(Robot.oi.driveStick.getRawAxis(1)) <= RobotMap.driveJoystickXDeadZone) { // dead zone on the joystick so it does not move accidentaly
+    	if (Math.abs(Robot.oi.driveStick.getRawAxis(1)) <= RobotMap.driveJoystickYDeadZone) { // dead zone on the joystick so it does not move accidentaly
     		intentAxes[1] = 0;
     	} else {
-    		intentAxes[1] = Robot.oi.driveStick.getRawAxis(1); // places axes 2 into index 1 of array
+    		intentAxes[1] = - (Robot.oi.driveStick.getRawAxis(1)); // places axes 2 into index 1 of array (must invert y axis)
     	}
-    	if (Math.abs(Robot.oi.driveStick.getRawAxis(2)) <= RobotMap.driveJoystickXDeadZone) { // dead zone on the joystick so it does not move accidentaly
+    	if (Math.abs(Robot.oi.driveStick.getRawAxis(2)) <= RobotMap.driveJoystickzDeadZone) { // dead zone on the joystick so it does not move accidentaly
     		intentAxes[2] = 0;
     	} else {
     		intentAxes[2] = Robot.oi.driveStick.getRawAxis(2); // places axes 3 into index 2 of array
@@ -126,15 +126,19 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     		    double c = y1 - r1 * (W / r);
     		    double e = y1 + r1 * (W / r);
 
-    		    double backLeftSpeed = Math.sqrt ((b * b) + (c * c));
+    		    
+    		    double frontRightSpeed = Math.sqrt ((b * b) + (c * c));
     		    double frontLeftSpeed = Math.sqrt ((b * b) + (e * e));
-    		    double frontRightSpeed = Math.sqrt ((a * a) + (e * e));
+    		    double backLeftSpeed = Math.sqrt ((a * a) + (e * e));
     		    double backRightSpeed = Math.sqrt ((a * a) + (c * c));
 
-    		    double backLeftAngle = 180 * (Math.atan2 (b, c) / Math.PI);
-    		    double frontLeftAngle = 180 * (Math.atan2 (b, e) / Math.PI);
-    		    double frontRightAngle = 180 * (Math.atan2 (a, e) / Math.PI);
-    		    double backRightAngle = 180 * (Math.atan2 (a, c) / Math.PI);
+    		    double frontRightAngle = -180 * (Math.atan2 (b, c) / Math.PI);
+    		    double frontLeftAngle = -180 * (Math.atan2 (b, e) / Math.PI);
+    		    double backLeftAngle = -180 * (Math.atan2 (a, e) / Math.PI);
+    		    double backRightAngle = -180 * (Math.atan2 (a, c) / Math.PI);
+    		    
+    		    
+    		    
     		    
     		    // outputs desired speeds and angles of modules
     		    // speeds from -1 to 1 
@@ -168,15 +172,41 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     		    SmartDashboard.putNumber("frontLeftSpeed", frontLeftSpeed);
     		    
     		    
-    		    WheelAngleSpeeds[0] = backRightAngle;
-    		    WheelAngleSpeeds[1] = backRightSpeed;
-    		    WheelAngleSpeeds[2] = backLeftAngle;
-    		    WheelAngleSpeeds[3] = backLeftSpeed;
-    		    WheelAngleSpeeds[4] = frontRightAngle;
-    		    WheelAngleSpeeds[5] = frontRightSpeed;
-    		    WheelAngleSpeeds[6] = frontLeftAngle;
-    		    WheelAngleSpeeds[7] = frontLeftSpeed;
+    		    SmartDashboard.putNumber("BRDifferenceToTargetInDegrees", backRightModule.getDifferenceToTargetInDegrees()); // smartDashboard Prints 
+    	    	SmartDashboard.putNumber("BRneedeAngleSpeed", backRightModule.getNeededAngleSpeed());
     		    
+    		    SmartDashboard.putNumber("BLDifferenceToTargetInDegrees", backLeftModule.getDifferenceToTargetInDegrees());
+    	    	SmartDashboard.putNumber("BLneedeAngleSpeed", backLeftModule.getNeededAngleSpeed());
+    		    
+    		    SmartDashboard.putNumber("FRDifferenceToTargetInDegrees", frontRightModule.getDifferenceToTargetInDegrees());
+    	    	SmartDashboard.putNumber("FRneedeAngleSpeed", frontRightModule.getNeededAngleSpeed());
+    		    
+    		    SmartDashboard.putNumber("FLDifferenceToTargetInDegrees", frontLeftModule.getDifferenceToTargetInDegrees());
+    	    	SmartDashboard.putNumber("FLneedeAngleSpeed", frontLeftModule.getNeededAngleSpeed());
+    	    	
+    		    if (Math.abs(Robot.oi.driveStick.getRawAxis(0)) <= RobotMap.driveJoystickXDeadZone && Math.abs(Robot.oi.driveStick.getRawAxis(1)) <= RobotMap.driveJoystickYDeadZone && Math.abs(Robot.oi.driveStick.getRawAxis(2)) <= RobotMap.driveJoystickzDeadZone) {
+    		    	
+    		    	WheelAngleSpeeds[0] = 0;
+        		    WheelAngleSpeeds[1] = 0;
+        		    WheelAngleSpeeds[2] = 0;
+        		    WheelAngleSpeeds[3] = 0;
+        		    WheelAngleSpeeds[4] = 0;
+        		    WheelAngleSpeeds[5] = 0;
+        		    WheelAngleSpeeds[6] = 0;
+        		    WheelAngleSpeeds[7] = 0;
+    		    	
+    		    } else {
+    		    	
+    		    	WheelAngleSpeeds[0] = backRightAngle;
+    		    	WheelAngleSpeeds[1] = backRightSpeed;
+    		    	WheelAngleSpeeds[2] = backLeftAngle;
+    		    	WheelAngleSpeeds[3] = backLeftSpeed;
+    		    	WheelAngleSpeeds[4] = frontRightAngle;
+    		    	WheelAngleSpeeds[5] = frontRightSpeed;
+    		    	WheelAngleSpeeds[6] = frontLeftAngle;
+    		    	WheelAngleSpeeds[7] = frontLeftSpeed;
+    		    
+    		    }
     		    // end Grimes-Mitchell's math
     		
     	
