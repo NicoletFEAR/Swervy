@@ -2,6 +2,7 @@ package org.usfirst.frc.team4786.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import org.usfirst.frc.team4786.robot.Robot;
 import org.usfirst.frc.team4786.robot.RobotMap;
 
 import com.ctre.phoenix.motorcontrol.SensorCollection;
@@ -20,7 +21,16 @@ public class ModuleDriver extends Subsystem {
 	public WPI_TalonSRX driveMotorSpeedController;
 	public SensorCollection angleEncoder;
 	//public ModuleAnglePID ModuleAnglePIDController; 
-	private double encoderPosition;
+	private double oldEncoderPosition;
+	private double newEncPos;
+	
+	
+
+	private double a;
+	private double b;
+	private double c;
+	
+	private double ticksPerHalfRot; // half an encoder rotation, will be set from robot map 
 
 	private double differenceToTargetInDegrees;
 	private double neededAngleSpeed;
@@ -51,118 +61,123 @@ public class ModuleDriver extends Subsystem {
     }
     
     public void spinToAngle (double targetAngle) { // spins to a target angle
-    	encoderPosition = angleEncoder.getQuadraturePosition(); // gets encoder position
+    	oldEncoderPosition = angleEncoder.getQuadraturePosition(); // gets encoder position
     	// encoder is positive clockwise, but our math is positive counterclockwise, so we have to negate the encoder values
-    	encoderPosition = - (encoderPosition);
+    	oldEncoderPosition = - (oldEncoderPosition);
+    	ticksPerHalfRot = RobotMap.encoderTicksPerHalf;
+    	// for reference:
+    	// motor speed is positive counterclockwise
+    	// angle is positive counterclockwise
+    	// original encoder is positive clockwise, but the previous step made it positive counterclockwise
     	
-    	// may need a - 90 on turnangle
-    	targetAngle = (targetAngle) * (RobotMap.encoderCodesPerRev / 360); // converts to forward orientation in encoder ticks
-    	
-    	differenceToTargetInDegrees = (targetAngle - encoderPosition) / (RobotMap.encoderCodesPerRev / 360);
-    	
-    	if (Math.abs(differenceToTargetInDegrees) > RobotMap.angleEncoderDeadZone) { // if it needs to move (difference greater than dead zone):
+    	// CONTINUOUS code to convert encoder value to under 1 rotation:
+    	 a = (oldEncoderPosition / ticksPerHalfRot); // example: 1.2 means it has gone 1 half rotation and then 2/10s of a half rotation too far
+    	SmartDashboard.putNumber("A", a);
+    	 b = (int) a; // get just the integer portion of a
+    	 
+    	 c = a - b; // get just the decimal portion of a
+    	 
+    	if (Math.abs(a) > 1) { // if its gone past a half rotation
     		
-    		
-    		if (this.angleEncoder.getQuadraturePosition() > RobotMap.encoderCodesPerRev) { // if the encoder has gone more than a full rotation: 
-    			int newEncoderVal = (int) (this.angleEncoder.getQuadraturePosition() - RobotMap.encoderCodesPerRev); // subtract a full rotation
-    			this.angleEncoder.setQuadraturePosition(newEncoderVal, 10); // reset it to under 1 rotation
-    		} 
-    		if (this.angleEncoder.getQuadraturePosition() < -RobotMap.encoderCodesPerRev) { // if the encoder has gone more than a full rotation backwards: 
-    			int newEncoderVal = (int) (this.angleEncoder.getQuadraturePosition() + RobotMap.encoderCodesPerRev); // add a full rotation
-    			this.angleEncoder.setQuadraturePosition(newEncoderVal, 10); // reset it to under 1 rotation
-    		}
-    		
-    		
-    		
-    		
-    		if (Math.abs(differenceToTargetInDegrees) > 180) { // if its most efficient to rotate around the other way (continuous rotation)  
+    		if (b % 2 == 0) { // if even (has gone around full rotation and on same side)
+    			newEncPos = (c * ticksPerHalfRot);
+    		} else { // if odd (has gone around half rotation and therefore on the opposite side)
     			
-    			
-    			
-    			if (differenceToTargetInDegrees > 0) { //if it needs to turn counterclockwise
-        			// neededAngleSpeed =  - (Math.abs(-0.00001 * (differenceToTargetInDegrees) *(differenceToTargetInDegrees)+ 0.007 * (differenceToTargetInDegrees)- 0.06));
-        			if (differenceToTargetInDegrees <= 240) { // ramps up/down based on how far it has to turn
-        				neededAngleSpeed = -1;
-        			} else if (differenceToTargetInDegrees <= 300) {
-        				neededAngleSpeed = -0.6;
-        			} else if (differenceToTargetInDegrees <= 350) {
-        				neededAngleSpeed = -0.3;
-        			} else {
-        				neededAngleSpeed = -0.1;
-        			}
-        			
-        		} else { // if it needs to turn clockwise
-        			if (differenceToTargetInDegrees >= -240) {
-        				neededAngleSpeed = 1;
-        			} else if (differenceToTargetInDegrees >= -300) {
-        				neededAngleSpeed = 0.6;
-        			} else if (differenceToTargetInDegrees >= -350) {
-        				neededAngleSpeed = 0.3;
-        			} else {
-        				neededAngleSpeed = 0.1;
-        			}
-        		}
-    			
-    			
-    			
-    		} else { // if it is most efficient to rotate around the normal way
-    		
-    			
-    			
-    		if (differenceToTargetInDegrees > 0) { //if it needs to turn counterclockwise
-    			// neededAngleSpeed =  - (Math.abs(-0.00001 * (differenceToTargetInDegrees) *(differenceToTargetInDegrees)+ 0.007 * (differenceToTargetInDegrees)- 0.06));
-    			if (differenceToTargetInDegrees >= 120) { // ramps up/down based on how far it has to turn
-    				neededAngleSpeed = 1;
-    			} else if (differenceToTargetInDegrees >= 60) {
-    				neededAngleSpeed = 0.6;
-    			} else if (differenceToTargetInDegrees >= 10) {
-    				neededAngleSpeed = 0.3;
-    			} else {
-    				neededAngleSpeed = 0.1;
+    			if (oldEncoderPosition >= ticksPerHalfRot) { // if it has gone too far counterclockwise
+    				newEncPos = -ticksPerHalfRot + (c * ticksPerHalfRot);	
+    			} else if (oldEncoderPosition <= - ticksPerHalfRot) { // gone too far clockwise
+    				newEncPos = ticksPerHalfRot + (c * ticksPerHalfRot);	
     			}
     			
-    		} else { // if it needs to turn clockwise
-    			if (differenceToTargetInDegrees <= -120) {
-    				neededAngleSpeed = -1;
-    			} else if (differenceToTargetInDegrees <= -60) {
-    				neededAngleSpeed = -0.6;
-    			} else if (differenceToTargetInDegrees <= -10) {
-    				neededAngleSpeed = -0.3;
-    			} else {
-    				neededAngleSpeed = -0.1;
-    			}
-    		}
     		}
     		
-    	} else { // if its within acceptable zone:
-    		
-    		neededAngleSpeed = 0; // sets the desired motor speed to 0  -  STOP
+    	} else { // if no continous needs to happen:
+    		newEncPos = oldEncoderPosition; // leave it because its in the right range
     	}
-    	/*
-    	SmartDashboard.putNumber("differenceToTargetInDegrees", differenceToTargetInDegrees);
-    	SmartDashboard.putNumber("needeAngleSpeed", neededAngleSpeed);
-    	SmartDashboard.putNumber("targetAngleInEncoderTicksFacingFront", targetAngle);
-    	*/
+    	
+    	targetAngle = (targetAngle) * (RobotMap.encoderCodesPerRev / 360); // converts to encoder ticks
+    	differenceToTargetInDegrees = (targetAngle - newEncPos) / (RobotMap.encoderCodesPerRev / 360); // calculates distance to targetAngle from current enc pos and converts to degrees
+    	
+    	// calculate most efficient direction and distance to get to target angle
+    	if (Math.abs(differenceToTargetInDegrees) > 180) { // if it is more efficient to go around the other way :
+    		if (differenceToTargetInDegrees < 0){ // if the long way would be negative (clockwise) :
+    			differenceToTargetInDegrees = 360 + differenceToTargetInDegrees; // counterclockwise (+)
+    		} else { // if the long way would be positive (counterclockwise) :
+    			differenceToTargetInDegrees = differenceToTargetInDegrees - 360; // clockwise (-)
+    		} 
+    	} // if the normal way is OK then differneceToTargetInDegrees is fine as it is
+    	
+    	// set motor speeds based on DifToTarInDeg:
+    	if (differenceToTargetInDegrees > 0) { // if it needs to go counterclockwise (+) :
+    		if (differenceToTargetInDegrees > 90) {
+    			neededAngleSpeed = 1;
+    		} else if (differenceToTargetInDegrees > 60) {
+    			neededAngleSpeed = 0.6;
+    		} else if (differenceToTargetInDegrees > 30) {
+    			neededAngleSpeed = 0.3;
+    		} else if (differenceToTargetInDegrees > RobotMap.angleEncoderDeadZone) {
+    			neededAngleSpeed = 0.1;
+    		} else {
+    			neededAngleSpeed = 0;
+    		}
+    	} else {  // if it needs to go clockwise (-) :
+    		if (differenceToTargetInDegrees < -90) {
+    			neededAngleSpeed = -1;
+    		} else if (differenceToTargetInDegrees < -60) {
+    			neededAngleSpeed = -0.6;
+    		} else if (differenceToTargetInDegrees < -30) {
+    			neededAngleSpeed = -0.3;
+    		} else if (differenceToTargetInDegrees < -RobotMap.angleEncoderDeadZone) {
+    			neededAngleSpeed = -0.1;
+    		} else {
+    			neededAngleSpeed = 0;
+    		}
+    	}
+    	
+    	// if no movement has to happen, keep the wheels where they are
+    	//if ((Math.abs(Robot.oi.driveStick.getRawAxis(0)) < RobotMap.driveJoystickXDeadZone) && (Math.abs(Robot.oi.driveStick.getRawAxis(1)) < RobotMap.driveJoystickYDeadZone) && (Math.abs(Robot.oi.driveStick.getRawAxis(3)) < RobotMap.driveJoystickzDeadZone)) {
+    	if ((Math.abs(Robot.oi.driveStick.getRawAxis(0)) < 0.175) && (Math.abs(Robot.oi.driveStick.getRawAxis(1)) < 0.175) && (Math.abs(Robot.oi.driveStick.getRawAxis(2)) < 0.175)) {	
+    		neededAngleSpeed = 0;
+    		SmartDashboard.putBoolean("allInDeadZone", true);
+    	} else {
+    		SmartDashboard.putBoolean("allInDeadZone", false);
+    		//neededAngleSpeed = 0;
+    	}
+    	
     	angleMotorSpeedController.set(neededAngleSpeed); // sets the motor to the desired speed
     	
-    	//ModuleAnglePIDController.setAngleSetpoint(targetAngle); // tells the PID what it needs to get to (in degrees)
     }
     
-    public void setRotationSpeed (double targetRotationSpeed) { // receives target angle gets the module to that angle
-    	angleMotorSpeedController.set(targetRotationSpeed); // sets the speed of the rotation motor to target rotation speed 
-    }
+    
+    
     
     public void setDriveSpeed (double targetSpeed) { // receives target speed and gets the module to that speed
     	driveMotorSpeedController.set(targetSpeed); // sets the speed of the driveMotor to target speed
     }
     
 
-	public double getDifferenceToTargetInDegrees() {
+	public double getDifferenceToTargetInDegrees() { // allows value to be accessed elsewhere
 		return differenceToTargetInDegrees;
 	}
 	
-	public double getNeededAngleSpeed() {
+	public double getNeededAngleSpeed() {  // allows value to be accessed elsewhere
 		return neededAngleSpeed;
+	}
+	
+	public double getA() {
+		return a;
+	}
+
+	public double getB() {
+		return b;
+	}
+
+	public double getC() {
+		return c;
+	}
+	
+	public double getNewEncPos() {
+		return newEncPos;
 	}
 	
 	

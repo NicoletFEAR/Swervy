@@ -19,8 +19,9 @@ public class RobotMap {
 	public static double wheelWidthDistance = 20; // distance between wheels left to right
 	public static double wheelLengthDistance = 18.5; // distance between wheels front to back
 	
-	public static double encoderCodesPerRev = 1600; // how many ticks are in an encoder circle (may be wrong)
-	public static double angleEncoderDeadZone = 5; // dead zone for turning to module angle
+	public static double encoderCodesPerRev = 1666; // how many ticks are in an encoder circle (done by estimation of manually turning wheels)
+	public static double encoderTicksPerHalf = 833; // same but half rotation
+	public static double angleEncoderDeadZone = 6; // dead zone for turning to module angle (degrees)
 	
 	// Joystick dead zones
 	public static double driveJoystickXDeadZone = 0.175;

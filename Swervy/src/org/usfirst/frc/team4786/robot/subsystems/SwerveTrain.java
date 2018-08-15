@@ -174,15 +174,31 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     		    
     		    SmartDashboard.putNumber("BRDifferenceToTargetInDegrees", backRightModule.getDifferenceToTargetInDegrees()); // smartDashboard Prints 
     	    	SmartDashboard.putNumber("BRneedeAngleSpeed", backRightModule.getNeededAngleSpeed());
+    	    	SmartDashboard.putNumber("BRa", backRightModule.getA());
+    	    	SmartDashboard.putNumber("BRb", backRightModule.getB());
+    	    	SmartDashboard.putNumber("BRc", backRightModule.getC());
+    	    	SmartDashboard.putNumber("BRnewEncPos", backRightModule.getNewEncPos());
     		    
     		    SmartDashboard.putNumber("BLDifferenceToTargetInDegrees", backLeftModule.getDifferenceToTargetInDegrees());
     	    	SmartDashboard.putNumber("BLneedeAngleSpeed", backLeftModule.getNeededAngleSpeed());
+    	    	SmartDashboard.putNumber("BLa", backLeftModule.getA());
+    	    	SmartDashboard.putNumber("BLb", backLeftModule.getB());
+    	    	SmartDashboard.putNumber("BLc", backLeftModule.getC());
+    	    	SmartDashboard.putNumber("BLnewEncPos", backLeftModule.getNewEncPos());
     		    
     		    SmartDashboard.putNumber("FRDifferenceToTargetInDegrees", frontRightModule.getDifferenceToTargetInDegrees());
     	    	SmartDashboard.putNumber("FRneedeAngleSpeed", frontRightModule.getNeededAngleSpeed());
+    	    	SmartDashboard.putNumber("FRa", frontRightModule.getA());
+    	    	SmartDashboard.putNumber("FRb", frontRightModule.getB());
+    	    	SmartDashboard.putNumber("FRc", frontRightModule.getC());
+    	    	SmartDashboard.putNumber("FRnewEncPos", frontRightModule.getNewEncPos());
     		    
     		    SmartDashboard.putNumber("FLDifferenceToTargetInDegrees", frontLeftModule.getDifferenceToTargetInDegrees());
     	    	SmartDashboard.putNumber("FLneedeAngleSpeed", frontLeftModule.getNeededAngleSpeed());
+    	    	SmartDashboard.putNumber("FLa", frontLeftModule.getA());
+    	    	SmartDashboard.putNumber("FLb", frontLeftModule.getB());
+    	    	SmartDashboard.putNumber("FLc", frontLeftModule.getC());
+    	    	SmartDashboard.putNumber("FLnewEncPos", frontLeftModule.getNewEncPos());
     	    	
     		    if (Math.abs(Robot.oi.driveStick.getRawAxis(0)) <= RobotMap.driveJoystickXDeadZone && Math.abs(Robot.oi.driveStick.getRawAxis(1)) <= RobotMap.driveJoystickYDeadZone && Math.abs(Robot.oi.driveStick.getRawAxis(2)) <= RobotMap.driveJoystickzDeadZone) {
     		    	
