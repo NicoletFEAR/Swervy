@@ -87,6 +87,14 @@ public class Robot extends IterativeRobot {
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null) // If the auto command seems good...
 			autonomousCommand.start(); // run it!
+		
+		swerveTrain.backLeftModule.angleEncoder.setQuadraturePosition(0, 10); // reset the encoders
+		swerveTrain.backRightModule.angleEncoder.setQuadraturePosition(0, 10); // reset the encoders
+		swerveTrain.frontLeftModule.angleEncoder.setQuadraturePosition(0, 10); // reset the encoders
+		swerveTrain.frontRightModule.angleEncoder.setQuadraturePosition(0, 10); // reset the encoders
+		
+		swerveTrain.navX.reset(); // resets navX 
+		
 	}
 
 	/**
@@ -106,10 +114,14 @@ public class Robot extends IterativeRobot {
 		if (autonomousCommand != null)
 			autonomousCommand.cancel(); // ends the autonomous
 		
+		
+		// THESE RESETS ARE ONLY IN TELEOP INIT BECAUSE OF TESTING >>> AT COMP THEY HAVE TO BE AT AUTONOMOUS INIT ONLY
 		swerveTrain.backLeftModule.angleEncoder.setQuadraturePosition(0, 10); // reset the encoders
 		swerveTrain.backRightModule.angleEncoder.setQuadraturePosition(0, 10); // reset the encoders
 		swerveTrain.frontLeftModule.angleEncoder.setQuadraturePosition(0, 10); // reset the encoders
 		swerveTrain.frontRightModule.angleEncoder.setQuadraturePosition(0, 10); // reset the encoders
+		
+		swerveTrain.navX.reset(); // resets navX 
 		
 		
 	}

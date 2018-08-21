@@ -18,7 +18,7 @@ import com.kauailabs.navx.frc.AHRS;
  */
 public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
 
-	private AHRS navX; // navX so we know angle 
+	public AHRS navX; // navX so we know angle 
 	
 	public boolean isFieldOriented;
 	
@@ -86,25 +86,33 @@ public class SwerveTrain extends Subsystem { // Like DriveTrain, but swervy
     	
     	//math :) depending on field oriented or robot oriented:
     	
-    	double Ox1 = xAxisIntent;
-    	double Oy1 = yAxisIntent;
+    	double Ox = xAxisIntent;
+    	double Oy = yAxisIntent;
     	
     	double x1;
     	double y1;
     	double r1 = rAxisIntent;
+    	
+    	double navxAngle = navX.getAngle(); // get the value of the navX
+    	SmartDashboard.putNumber("navXAngle", navxAngle);	// navX angle is positive clockwise
     		
     	if (isFieldOriented) { // change the x and y so that forward is field oriented
     		
-    		double navxAngle = navX.getAngle(); // get the value of the navX
     		
-    		SmartDashboard.putNumber("navXAngle", navxAngle);
+    		double OCombinedMag = Math.abs(Math.sqrt ((Ox * Ox) + (Oy * Oy))); // magnitude of desired movement (joystick)
+    		double OCombinedAngle = ((180/Math.PI) * Math.atan2(Oy, Ox));
+    		SmartDashboard.putNumber("OldCombinedAngle", OCombinedAngle);
     		
-    		double h = Math.sqrt ((Ox1 * Ox1) + (Oy1 * Oy1)); 
-    		double thetaAngle = (Math.atan(Oy1 / Ox1) + navxAngle); // these two lines essentially add the x and y inputs into dir and mag and then rotates it based on navX angle
+    		double NCombinedMag = OCombinedMag;
+    		double NCombinedAngle = OCombinedAngle + navxAngle;
+    		SmartDashboard.putNumber("NewCombinedAngle", NCombinedAngle);
     		
-    		x1 = h * Math.cos(thetaAngle); // converts back to x and y axes
-        	y1 = h * Math.sin(thetaAngle); 
+    		y1 = Math.sin((Math.PI/180) * NCombinedAngle) * NCombinedMag;
+    		x1 = Math.cos((Math.PI/180) * NCombinedAngle) * NCombinedMag;
     		
+    		SmartDashboard.putNumber("x1", x1);
+    		SmartDashboard.putNumber("y1", y1);
+        	
     	} else { // if Robot Oriented
     		// the values should work as they are
     		x1 = xAxisIntent;
