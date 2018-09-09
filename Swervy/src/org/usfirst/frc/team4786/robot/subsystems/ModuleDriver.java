@@ -26,6 +26,10 @@ public class ModuleDriver extends Subsystem {
 	
 	public boolean wheelIsFront;
 
+	public void setWheelIsFront(boolean wheelIsFront) {
+		this.wheelIsFront = wheelIsFront;
+	}
+
 	private double a;
 	private double b;
 	private double c;
@@ -95,7 +99,7 @@ public class ModuleDriver extends Subsystem {
     	}
     	
     	// FLIPS ENCODER POS IF WHEEL FACING BACKWARDS:
-    	if (wheelIsFront = false) { // facing back 
+    	if (wheelIsFront == false) { // facing back 
     		if (newEncPos > 0) { // if it's positive:
     			newEncPos = -(ticksPerHalfRot) + newEncPos; // rotates it 180
     		} else { // if it's negative:
@@ -118,9 +122,12 @@ public class ModuleDriver extends Subsystem {
     	
     	
     	// FLIPPING WHEELS:
-    	if (Math.abs(differenceToTargetInDegrees) > 90) {
+    	if (Math.abs(differenceToTargetInDegrees) > 100) { // ideally is 90 CHAAANGE!!!!!!!!!!!!!
+    		
     		
     		wheelIsFront = !(wheelIsFront); // tell it that you want to flip that wheel!
+    		
+    		
     		
     		// ENCODER FLIPPING: (same as before)
     		if (newEncPos > 0) { // if it's positive:

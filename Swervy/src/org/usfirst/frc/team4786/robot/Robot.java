@@ -123,6 +123,11 @@ public class Robot extends IterativeRobot {
 		
 		swerveTrain.navX.reset(); // resets navX 
 		
+		swerveTrain.backRightModule.setWheelIsFront(true);
+		swerveTrain.backLeftModule.setWheelIsFront(true);
+		swerveTrain.frontRightModule.setWheelIsFront(true);
+		swerveTrain.frontLeftModule.setWheelIsFront(true);
+		
 		
 	}
 
@@ -137,7 +142,14 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("backLeftEncoderValue", swerveTrain.backLeftModule.angleEncoder.getQuadraturePosition());
 		SmartDashboard.putNumber("frontRightEncoderValue", swerveTrain.frontRightModule.angleEncoder.getQuadraturePosition());
 		SmartDashboard.putNumber("forntLeftEncoderValue", swerveTrain.frontLeftModule.angleEncoder.getQuadraturePosition());
+		
+		
+		SmartDashboard.putBoolean("backRightWheelIsFront", swerveTrain.backRightModule.wheelIsFront); // print out encoder values
+		SmartDashboard.putBoolean("backLeftWheelIsFront", swerveTrain.backLeftModule.wheelIsFront);
+		SmartDashboard.putBoolean("frontRightWheelIsFront", swerveTrain.frontRightModule.wheelIsFront);
+		SmartDashboard.putBoolean("forntLeftWheelIsFront", swerveTrain.frontLeftModule.wheelIsFront);
 
+		
 		//swerveDrive.drive (joystick.getRawAxis (0), joystick.getRawAxis (1), joystick.getRawAxis (2));
 
 	}
