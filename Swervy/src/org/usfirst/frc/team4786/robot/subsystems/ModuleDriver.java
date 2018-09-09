@@ -24,7 +24,7 @@ public class ModuleDriver extends Subsystem {
 	private double oldEncoderPosition;
 	private double newEncPos;
 	
-	
+	public boolean wheelIsFront;
 
 	private double a;
 	private double b;
@@ -36,6 +36,7 @@ public class ModuleDriver extends Subsystem {
 	private double neededAngleSpeed;
 	
 	public ModuleDriver (int angleMotorSpeedControllerID, int driveMotorSpeedControllerID) { // makes a module with its angleMotorSpeedControllerID and driveMotorSpeedControllerID
+		wheelIsFront = true;
 		
 		this.angleMotorSpeedController = new WPI_TalonSRX (angleMotorSpeedControllerID); // gives each new module that is created an angleMotorSpeedController
 		this.driveMotorSpeedController = new WPI_TalonSRX (driveMotorSpeedControllerID);
@@ -82,18 +83,25 @@ public class ModuleDriver extends Subsystem {
     		if (b % 2 == 0) { // if even (has gone around full rotation and on same side)
     			newEncPos = (c * ticksPerHalfRot);
     		} else { // if odd (has gone around half rotation and therefore on the opposite side)
-    			
     			if (oldEncoderPosition >= ticksPerHalfRot) { // if it has gone too far counterclockwise
     				newEncPos = -ticksPerHalfRot + (c * ticksPerHalfRot);	
     			} else if (oldEncoderPosition <= - ticksPerHalfRot) { // gone too far clockwise
     				newEncPos = ticksPerHalfRot + (c * ticksPerHalfRot);	
     			}
-    			
     		}
     		
-    	} else { // if no continous needs to happen:
+    	} else { // if no continuous needs to happen:
     		newEncPos = oldEncoderPosition; // leave it because its in the right range
     	}
+    	
+    	// FLIPS ENCODER POS IF WHEEL FACING BACKWARDS:
+    	if (wheelIsFront = false) { // facing back 
+    		if (newEncPos > 0) { // if it's positive:
+    			newEncPos = -(ticksPerHalfRot) + newEncPos; // rotates it 180
+    		} else { // if it's negative:
+    			newEncPos = (ticksPerHalfRot) + newEncPos;  // rotates it 180
+    		}
+    	} // END FLIP
     	
     	targetAngle = (targetAngle) * (RobotMap.encoderCodesPerRev / 360); // converts to encoder ticks
     	differenceToTargetInDegrees = (targetAngle - newEncPos) / (RobotMap.encoderCodesPerRev / 360); // calculates distance to targetAngle from current enc pos and converts to degrees
@@ -107,26 +115,56 @@ public class ModuleDriver extends Subsystem {
     		} 
     	} // if the normal way is OK then differneceToTargetInDegrees is fine as it is
     	
+    	
+    	
+    	// FLIPPING WHEELS:
+    	if (Math.abs(differenceToTargetInDegrees) > 90) {
+    		
+    		wheelIsFront = !(wheelIsFront); // tell it that you want to flip that wheel!
+    		
+    		// ENCODER FLIPPING: (same as before)
+    		if (newEncPos > 0) { // if it's positive:
+    			newEncPos = -(ticksPerHalfRot) + newEncPos; // rotates it 180
+    		} else { // if it's negative:
+    			newEncPos = (ticksPerHalfRot) + newEncPos;  // rotates it 180
+    		}
+    		
+    		// RECALCULATE THE DISTANCE TO TARGET ANGLE WITH NEW ENCODER VALUE: (repeat, same as above)
+    		targetAngle = (targetAngle) * (RobotMap.encoderCodesPerRev / 360); // converts to encoder ticks
+        	differenceToTargetInDegrees = (targetAngle - newEncPos) / (RobotMap.encoderCodesPerRev / 360); // calculates distance to targetAngle from current enc pos and converts to degrees
+    		// calculate most efficient direction and distance to get to target angle
+        	if (Math.abs(differenceToTargetInDegrees) > 180) { // if it is more efficient to go around the other way :
+        		if (differenceToTargetInDegrees < 0){ // if the long way would be negative (clockwise) :
+        			differenceToTargetInDegrees = 360 + differenceToTargetInDegrees; // counterclockwise (+)
+        		} else { // if the long way would be positive (counterclockwise) :
+        			differenceToTargetInDegrees = differenceToTargetInDegrees - 360; // clockwise (-)
+        		} 
+        	} // if the normal way is OK then differneceToTargetInDegrees is fine as it is
+    	}  // END OF FLIPPING CODE
+    	
+    	
+
+    	// CALCULATE NEEDED SPEEDS:
     	// set motor speeds based on DifToTarInDeg:
     	if (differenceToTargetInDegrees > 0) { // if it needs to go counterclockwise (+) :
     		if (differenceToTargetInDegrees > 90) {
-    			neededAngleSpeed = 1;
+    			neededAngleSpeed = 1; // 90+
     		} else if (differenceToTargetInDegrees > 60) {
-    			neededAngleSpeed = 0.6;
+    			neededAngleSpeed = 1; // 60-90
     		} else if (differenceToTargetInDegrees > 30) {
-    			neededAngleSpeed = 0.3;
+    			neededAngleSpeed = 0.5; // 30-60
     		} else if (differenceToTargetInDegrees > RobotMap.angleEncoderDeadZone) {
-    			neededAngleSpeed = 0.1;
+    			neededAngleSpeed = 0.1; // deadZone-30
     		} else {
-    			neededAngleSpeed = 0;
+    			neededAngleSpeed = 0; // < deadZone
     		}
     	} else {  // if it needs to go clockwise (-) :
     		if (differenceToTargetInDegrees < -90) {
     			neededAngleSpeed = -1;
     		} else if (differenceToTargetInDegrees < -60) {
-    			neededAngleSpeed = -0.6;
+    			neededAngleSpeed = -1;
     		} else if (differenceToTargetInDegrees < -30) {
-    			neededAngleSpeed = -0.3;
+    			neededAngleSpeed = -0.5;
     		} else if (differenceToTargetInDegrees < -RobotMap.angleEncoderDeadZone) {
     			neededAngleSpeed = -0.1;
     		} else {
@@ -143,6 +181,7 @@ public class ModuleDriver extends Subsystem {
     		SmartDashboard.putBoolean("allInDeadZone", false);
     		//neededAngleSpeed = 0;
     	}
+    	// END OF NEEDED SPEED CALC
     	
     	angleMotorSpeedController.set(neededAngleSpeed); // sets the motor to the desired speed
     	
@@ -152,7 +191,11 @@ public class ModuleDriver extends Subsystem {
     
     
     public void setDriveSpeed (double targetSpeed) { // receives target speed and gets the module to that speed
-    	driveMotorSpeedController.set(targetSpeed); // sets the speed of the driveMotor to target speed
+    	if (wheelIsFront) { // if the wheel is driving forward:
+    		driveMotorSpeedController.set(targetSpeed); // sets the speed of the driveMotor to target speed
+    	} else {
+    		driveMotorSpeedController.set(-targetSpeed); // sets it to drive backwards if wheel is flipped
+    	}
     }
     
 
