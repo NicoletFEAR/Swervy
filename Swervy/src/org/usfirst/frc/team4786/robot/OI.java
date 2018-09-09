@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
-import org.usfirst.frc.team4786.robot.commands.OrientationSwitch;
+import org.usfirst.frc.team4786.robot.commands.*;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,7 +21,8 @@ public class OI {
 	// number it is.
 	// Joystick stick = new Joystick(port);
 	public Joystick driveStick;
-	public Button buttonJoy1;
+	public Button buttonJoyTrigger1;
+	public Button driveJoyButton2;
 	// Button button = new JoystickButton(stick, buttonNumber);
 
 	// There are a few additional built in buttons you can use. Additionally,
@@ -29,9 +30,13 @@ public class OI {
 	// commands the same as any other Button.
 	public OI() {
 		
-		driveStick = new Joystick(0);
-		buttonJoy1 = new JoystickButton(driveStick, 1);
-		buttonJoy1.whenPressed(new OrientationSwitch());
+		driveStick = new Joystick(0); // drive joystick
+		
+		buttonJoyTrigger1 = new JoystickButton(driveStick, 1);
+		buttonJoyTrigger1.whenPressed(new OrientationSwitch());
+		
+		driveJoyButton2 = new JoystickButton(driveStick, 2);
+		driveJoyButton2.whenPressed(new ResetNavX());
 		
 	}
 	//// TRIGGERING COMMANDS WITH BUTTONS
